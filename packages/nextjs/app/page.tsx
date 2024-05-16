@@ -2,12 +2,14 @@
 
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
+import { getAddress } from "viem";
 import React, { useState, useEffect } from "react";
 import { Address } from "~~/components/scaffold-eth";
 import {
   useScaffoldContract,
   useScaffoldReadContract,
   useDeployedContractInfo,
+  useScaffoldWriteContract,
 } from "~~/hooks/scaffold-eth";
 
 
@@ -22,6 +24,8 @@ const Home: NextPage = () => {
   const { data: ohPandaMEMEContract } = useScaffoldContract({
     contractName: "OhPandaMEME",
   });
+
+  const { writeContractAsync: ohPandaMEMEWriteContract } = useScaffoldWriteContract("OhPandaMEME");
 
   const { data: balance } = useScaffoldReadContract({
     contractName: "OhPandaMEME",
@@ -78,27 +82,48 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
+          <div className="flex justify-center items-center space-x-2">
+            <button
+              className="btn btn-primary h-[2.2rem] min-h-[2.2rem] mt-6 mx-5"
+              onClick={async () => {
+                try {
+                  await ohPandaMEMEWriteContract({
+                    functionName: "mintItem",
+                  });
+                } catch (e) {
+                  console.error("Error Minting:", e);
+                }
+              }}
+            >
+              MINT
+            </button>
+          </div>
+
+          <div style={{ width: 820, margin: "auto", paddingBottom: 50 }}></div>
 
           <div className="flex flex-col text-center">
 
             {isLoading ? (
               <span>Loading...</span>
             ) : (
-              <div>
+              <div className="flex items-center flex-col">
                 {
                   yourOhPandaMEMEs && yourOhPandaMEMEs.length > 0 ?
-                    yourOhPandaMEMEs.map(({ id, uri, owner, name, image, description }) => (
-                      <div key={id}>
-                        <div className="text-center">
+                    yourOhPandaMEMEs.map(({ id, owner, name, image, description }) => (
+                      <div>
+                        <div key={id} className="flex items-center flex-col border" style={{ padding: 20 }}>
                           <span style={{ fontSize: 18, marginRight: 8 }}>{name}</span>
-                          <a href={"https://opensea.io/assets/" + OhPandaMEME?.address.toString + "/" + id} target="_blank">
+                          <a href={"https://opensea.io/assets/" + OhPandaMEME?.address.toString() + "/" + id} target="_blank">
                             <img src={image} />
                           </a>
                           <span>{description}</span>
-                          <span>
-                            owner:{" "} <Address address={connectedAddress} />
-                          </span>
+                          <div className="flex justify-center items-center space-x-2">
+                            <p>owner: </p>
+                            <Address address={getAddress(owner)} />
+                          </div>
+                          {/* <span> uri: {uri} </span> */}
                         </div>
+                        <div style={{ width: 820, margin: "auto", paddingBottom: 50 }}></div>
                       </div>
                     ))
                     :
