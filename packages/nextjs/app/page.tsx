@@ -110,8 +110,8 @@ const Home: NextPage = () => {
                 {
                   yourOhPandaMEMEs && yourOhPandaMEMEs.length > 0 ?
                     yourOhPandaMEMEs.map(({ id, owner, name, image, description }) => (
-                      <div>
-                        <div key={id} className="flex items-center flex-col border" style={{ padding: 20 }}>
+                      <div key={id}>
+                        <div className="flex items-center flex-col border" style={{ padding: 20 }}>
                           <span style={{ fontSize: 18, marginRight: 8 }}>{name}</span>
                           <a href={"https://opensea.io/assets/" + OhPandaMEME?.address.toString() + "/" + id} target="_blank">
                             <img src={image} />
