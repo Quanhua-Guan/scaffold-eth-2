@@ -109,18 +109,26 @@ const Home: NextPage = () => {
               <div className="flex items-center flex-col">
                 {
                   yourOhPandaMEMEs && yourOhPandaMEMEs.length > 0 ?
-                    yourOhPandaMEMEs.map(({ id, owner, name, image, description }) => (
+                    yourOhPandaMEMEs.map(({ id, owner, name, image, description, attributes }) => (
                       <div key={id}>
                         <div className="flex items-center flex-col border" style={{ padding: 20 }}>
-                          <span style={{ fontSize: 18, marginRight: 8 }}>{name}</span>
                           <a href={"https://opensea.io/assets/" + OhPandaMEME?.address.toString() + "/" + id} target="_blank">
                             <img src={image} />
                           </a>
-                          <span>{description}</span>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{name}</span>
                           <div className="flex justify-center items-center space-x-2">
-                            <p>owner: </p>
+                            <p>Owner: </p>
                             <Address address={getAddress(owner)} />
                           </div>
+                          <span>{description}</span>
+                          {
+                            (attributes as any[]).map(({ trait_type, value }) => (
+                              <div key={trait_type}>
+                                <span>{trait_type}: </span>
+                                <span>{value} </span>
+                              </div>
+                            ))
+                          }
                           {/* <span> uri: {uri} </span> */}
                         </div>
                         <div style={{ width: 820, margin: "auto", paddingBottom: 50 }}></div>

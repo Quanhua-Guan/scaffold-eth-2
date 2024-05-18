@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     OhPandaMEME: {
-      address: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+      address: "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
       abi: [
         {
           inputs: [],
@@ -205,7 +205,12 @@ const deployedContracts = {
             },
             {
               internalType: "string",
-              name: "faceStrokeColor",
+              name: "faceStrokeColor1",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "faceStrokeColor2",
               type: "string",
             },
             {
@@ -242,6 +247,11 @@ const deployedContracts = {
               internalType: "uint256",
               name: "noseSize",
               type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "tiltHead",
+              type: "bool",
             },
           ],
           stateMutability: "view",
