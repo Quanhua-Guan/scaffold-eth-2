@@ -23,7 +23,7 @@ contract OhPandaMEME is ERC721Enumerable, Ownable {
 
     constructor() ERC721("OhPandaMEME", "OPM") {}
 
-    function mintItem() public returns (uint256) {
+    function mintItem() public payable returns (uint256) {
         require(block.timestamp < mintDeadline, "DONE MINTING");
 
         uint256 tokenId = _nextTokenId++;
@@ -46,6 +46,10 @@ contract OhPandaMEME is ERC721Enumerable, Ownable {
         mouthWidth[tokenId] =
             9 +
             ((50 * uint256(uint8(predictableRandom[3]))) / 255);
+
+        // send donated eth to the owner
+        (bool sent, ) = owner().call{ value: msg.value }("");
+        require(sent, "failed to sent");
 
         return tokenId;
     }
