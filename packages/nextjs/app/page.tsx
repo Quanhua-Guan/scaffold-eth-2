@@ -2,7 +2,7 @@
 
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { getAddress } from "viem";
+import { getAddress, parseEther } from "viem";
 import React, { useState, useEffect } from "react";
 import { Address } from "~~/components/scaffold-eth";
 import {
@@ -26,6 +26,9 @@ const Home: NextPage = () => {
   });
 
   const { writeContractAsync: ohPandaMEMEWriteContract } = useScaffoldWriteContract("OhPandaMEME");
+
+  // REGEX for number inputs (only allow numbers and a single decimal point)
+  const NUMBER_REGEX = /^\.?\d+\.?\d*$/;
 
   const { data: balance } = useScaffoldReadContract({
     contractName: "OhPandaMEME",
@@ -95,7 +98,25 @@ const Home: NextPage = () => {
                 }
               }}
             >
-              MINT
+              MINT for FREE
+            </button>
+          </div>
+
+          <div className="flex justify-center items-center space-x-2">
+            <button
+              className="btn btn-primary h-[2.2rem] min-h-[2.2rem] mt-6 mx-5"
+              onClick={async () => {
+                try {
+                  await ohPandaMEMEWriteContract({
+                    functionName: "mintItem",
+                    value: parseEther("0.001")
+                  });
+                } catch (e) {
+                  console.error("Error Minting:", e);
+                }
+              }}
+            >
+              MINT for 0.001 ETH
             </button>
           </div>
 
