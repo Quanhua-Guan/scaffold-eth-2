@@ -27,9 +27,6 @@ const Home: NextPage = () => {
 
   const { writeContractAsync: ohPandaMEMEWriteContract } = useScaffoldWriteContract("OhPandaMEME");
 
-  // REGEX for number inputs (only allow numbers and a single decimal point)
-  const NUMBER_REGEX = /^\.?\d+\.?\d*$/;
-
   const { data: balance } = useScaffoldReadContract({
     contractName: "OhPandaMEME",
     functionName: "balanceOf",
