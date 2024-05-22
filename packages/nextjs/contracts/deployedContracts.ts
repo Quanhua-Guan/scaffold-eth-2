@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     FutureRandom: {
-      address: "0x5067457698Fd6Fa1C6964e416b3f42713513B3dD",
+      address: "0xa6e99A4ED7498b3cdDCBB61a6A607a4925Faa1B7",
       abi: [
         {
           inputs: [
@@ -19,6 +19,87 @@ const deployedContracts = {
           ],
           stateMutability: "nonpayable",
           type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "guess",
+              type: "uint256",
+            },
+          ],
+          name: "AngryBet",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "guess",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "blockNumber",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "win",
+              type: "bool",
+            },
+          ],
+          name: "ClaimBet",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "guess",
+              type: "uint256",
+            },
+          ],
+          name: "HappyBet",
+          type: "event",
         },
         {
           anonymous: false,
@@ -53,6 +134,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "angryBetCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -70,6 +164,11 @@ const deployedContracts = {
             {
               internalType: "bool",
               name: "claimed",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "isAngry",
               type: "bool",
             },
             {
@@ -123,6 +222,19 @@ const deployedContracts = {
           name: "happyBet",
           outputs: [],
           stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "happyBetCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {

@@ -5,17 +5,25 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // call happyBet: guess a random number between [1,2,3] with less than or equal to 0.0008 ether value.
 // call angryBet: guess a random number between [1,2,..,100] with less than or equal to 8 ether value.
-// call claimBet: check if guess the right number, if so, receive double ether value. if not the money is lost.
+// call claimBet: check if guess the right number, if so, win double ether value. if not the money is lost.
 contract FutureRandom is Ownable {
     struct Bet {
         uint256 blockNumber;
         bool claimed;
+        bool isAngry;
         uint256 guess;
         uint256 value;
     }
 
     mapping(address => Bet) public bets;
     uint256 public blocksToWait;
+
+    uint256 public happyBetCount;
+    uint256 public angryBetCount;
+
+    event HappyBet(address indexed from, uint256 value, uint256 guess);
+    event AngryBet(address indexed from, uint256 value, uint256 guess);
+    event ClaimBet(address indexed from, uint256 guess, uint256 blockNumber, bool win);
 
     constructor(uint256 _blocksToWait) {
         blocksToWait = _blocksToWait;
@@ -27,15 +35,21 @@ contract FutureRandom is Ownable {
         require(_guess >= 1 && _guess <= 3, "Invalid Guess");
 
         // send 1% to the owner
-        (bool success, ) = payable(owner()).call{ value: msg.value / 100 }("");
+	uint256 fee = msg.value / 100;
+        (bool success, ) = payable(owner()).call{ value: fee }("");
         require(success, "Fail to support owner");
+
+        happyBetCount += 1;
 
         bets[msg.sender] = Bet(
             block.number,
             false,
+            false,
             _guess,
-            msg.value - (msg.value / 100)
+            msg.value - fee
         );
+
+	emit HappyBet(msg.sender, msg.value, _guess);
     }
 
     function angryBet(uint256 _guess) public payable {
@@ -48,15 +62,21 @@ contract FutureRandom is Ownable {
         require(_guess >= 1 && _guess <= 100, "Invalid Guess");
 
         // send 1% to the owner
-        (bool success, ) = payable(owner()).call{ value: msg.value / 100 }("");
+        uint256 fee = msg.value / 100;
+        (bool success, ) = payable(owner()).call{ value: fee }("");
         require(success, "Fail to support owner");
+
+        angryBetCount += 1;
 
         bets[msg.sender] = Bet(
             block.number,
             false,
+            true,
             _guess,
-            msg.value - (msg.value / 100)
+            msg.value - fee
         );
+
+	emit AngryBet(msg.sender, msg.value, _guess);
     }
 
     function getRandomNumber() internal view returns (uint256) {
@@ -88,7 +108,7 @@ contract FutureRandom is Ownable {
             "Blocks to wait not passed"
         );
 
-        uint256 randomValue = (getRandomNumber() % 3) + 1;
+        uint256 randomValue = (getRandomNumber() % (bet.isAngry ? 100 : 3)) + 1;
         bet.claimed = true;
 
         bool win = false;
@@ -102,6 +122,8 @@ contract FutureRandom is Ownable {
 
         // Clear bet to prevent reuse
         delete bets[msg.sender];
+
+	emit ClaimBet(msg.sender, bet.guess, bet.blockNumber, win);
 
         return win;
     }
